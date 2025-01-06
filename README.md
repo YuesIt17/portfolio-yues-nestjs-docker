@@ -48,22 +48,25 @@ $ yarn run test:cov
 
 ## Settings of docker for DB
 
-- run docker container of postgres DB: docker run --name database-yuit-chart -d -p 5432:5432 -i -t -e POSTGRES_DB=yuit-chart-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=adminyuitpassword postgres
-- start container: docker start database-yuit-chart
+- run docker container of postgres DB: docker run --name yuit-chart-database -d -p 5432:5432 -i -t -e POSTGRES_DB=yuit-chart-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=adminyuitpassword postgres
 - check container: docker ps -a
-- exect inside to container: docker exec -it database-yuit-chart sh
+- exect inside to container: docker exec -it yuit-chart-database sh
 - remove container: docker rm -f CONTAINER_ID
 
-## Settings of docker for backend
+## Settings of docker image for backend
 
-- build image for local: docker build . -t yuit_chart_backend -f infra/docker/Dockerfile
-- run container: docker run -p 127.0.0.1:8080:3000/tcp -d yuit_chart_backend
+- build image for local: docker build . -t yuit-chart-backend-image -f infra/docker/Dockerfile
+- run container: docker run -p 127.0.0.1:8080:3000/tcp -d yuit-chart-backend-image
+- check container: docker ps -a
 
-## Settings of docker for backend with network
+## Settings of docker container for backend with network
 
+- create network: docker network create -d bridge yuit-net
+- check network: docker network ls
 - run docker container of postgres DB: docker run --network=yuit-net --name yuit-chart-db-host --rm -d -p 5432:5432 -i -t -e POSTGRES_DB=yuit-chart-db -e POSTGRES_USER=admin -e POSTGRES_PASSWORD=adminyuitpassword postgres
-- run container: docker run --network=yuit-net --name yuit-chart-backend -d -p 127.0.0.1:8080:8080/tcp yuit_chart_backend
-- exect inside to container: docker exec -it 5ac1ef5cdbdf sh -c 'ping yuit-chart-db-host'
+- build image for local: docker build . -t yuit-chart-backend-image -f infra/docker/Dockerfile
+- run container: docker run --network=yuit-net --name yuit-chart-backend -d -p 127.0.0.1:8080:8080/tcp yuit-chart-backend-image
+- exect inside to container: docker exec -it yuit-chart-backend sh -c 'ping yuit-chart-db-host'
 
 ## License
 
